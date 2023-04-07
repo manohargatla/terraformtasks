@@ -46,7 +46,6 @@ resource "aws_route_table" "route_table_lb" {
 }
 ## creating route_table association
 resource "aws_route_table_association" "lb_main_rt_association" {
-  count          = 1
   subnet_id      = aws_subnet.lb_subnet[0].id
   route_table_id = aws_route_table.route_table_lb.id
   depends_on = [
@@ -55,7 +54,6 @@ resource "aws_route_table_association" "lb_main_rt_association" {
 
 }
 resource "aws_route_table_association" "lb_main_rt_association1" {
-  count          = 1
   subnet_id      = aws_subnet.lb_subnet[1].id
   route_table_id = aws_route_table.route_table_lb.id
   depends_on = [
@@ -74,7 +72,7 @@ resource "aws_security_group" "terraformlb" {
     cidr_blocks = ["0.0.0.0/0"]
     protocol    = "-1"
   }
-  
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -94,7 +92,6 @@ resource "aws_key_pair" "deployer" {
 
 ## create EC2 instance
 resource "aws_instance" "apache" {
-  count                       = 1
   instance_type               = "t2.micro"
   associate_public_ip_address = "true"
   ami                         = "ami-007855ac798b5175e"
@@ -110,7 +107,6 @@ resource "aws_instance" "apache" {
   ]
 }
 resource "aws_instance" "nginx" {
-  count                       = 1
   instance_type               = "t2.micro"
   associate_public_ip_address = "true"
   ami                         = "ami-007855ac798b5175e"
@@ -130,20 +126,20 @@ resource "aws_instance" "nginx" {
 resource "aws_lb_target_group" "tg" {
   name     = "tf-lb-tg"
   port     = 80
-  protocol = "HTTP" 
+  protocol = "HTTP"
   vpc_id   = aws_vpc.lb_vpc.id
 }
 ## create target group attachement
 resource "aws_lb_target_group_attachment" "tg-attach" {
   count            = 1
   target_group_arn = aws_lb_target_group.tg.arn
-  target_id        = aws_instance.apache[count.index].id
+  target_id        = aws_instance.apache.id
   port             = 80
 }
 resource "aws_lb_target_group_attachment" "tg-attach-nginx" {
   count            = 1
   target_group_arn = aws_lb_target_group.tg.arn
-  target_id        = aws_instance.nginx[count.index].id
+  target_id        = aws_instance.nginx.id
   port             = 80
 }
 ## create load balancer
@@ -152,7 +148,7 @@ resource "aws_lb" "lb1" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.terraformlb.id]
-  subnets            = [aws_subnet.lb_subnet[0].id,aws_subnet.lb_subnet[1].id]
+  subnets            = [aws_subnet.lb_subnet[0].id, aws_subnet.lb_subnet[1].id]
 
   enable_deletion_protection = false
   tags = {
