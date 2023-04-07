@@ -91,33 +91,57 @@ resource "aws_key_pair" "deployer" {
 }
 
 ## create EC2 instance
-resource "aws_instance" "apache" {
+resource "aws_instance" "red" {
   instance_type               = "t2.micro"
   associate_public_ip_address = "true"
   ami                         = "ami-007855ac798b5175e"
   subnet_id                   = aws_subnet.lb_subnet[0].id
   vpc_security_group_ids      = [aws_security_group.terraformlb.id]
   key_name                    = "terraform3"
-  user_data                   = file("./modules/aws_ec2/apache.sh")
+  user_data                   = file("./modules/aws_ec2/spc.sh")
   tags = {
-    Name = "apache"
+    Name = "red"
   }
   depends_on = [
     aws_security_group.terraformlb
   ]
 }
-resource "aws_instance" "nginx" {
+## create null resoure
+  resource "null_resource" "spc" {
+  triggers = {
+    rollout_versions = var.lb_vpc_info.rollout_versions
+  }
+  connection {
+    type = "ssh"
+    user = "ubuntu"
+    private_key = file("~/.ssh/id_rsa")
+    host = aws_instance.red.public_ip
+  }
+}
+resource "aws_instance" "green" {
   instance_type               = "t2.micro"
   associate_public_ip_address = "true"
   ami                         = "ami-007855ac798b5175e"
   subnet_id                   = aws_subnet.lb_subnet[1].id
   vpc_security_group_ids      = [aws_security_group.terraformlb.id]
   key_name                    = "terraform3"
-  user_data                   = file("./modules/aws_ec2/nginx.sh")
+  user_data                   = file("./modules/aws_ec2/spc1.sh")
   tags = {
-    Name = "nginx"
+    Name = "green"
   }
   depends_on = [
     aws_security_group.terraformlb
   ]
 }
+## create null resoure
+resource "null_resource" "spc1" {
+  triggers = {
+    rollout_versions = var.lb_vpc_info.rollout_versions
+  }
+  connection {
+    type = "ssh"
+    user = "ubuntu"
+    private_key = file("~/.ssh/id_rsa")
+    host = aws_instance.green.public_ip
+  }
+ }
