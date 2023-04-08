@@ -106,6 +106,7 @@ resource "aws_instance" "red" {
     aws_security_group.terraformlb
   ]
 }
+
 ## create null resoure
   resource "null_resource" "spc" {
   triggers = {
@@ -117,6 +118,16 @@ resource "aws_instance" "red" {
     private_key = file("~/.ssh/id_rsa")
     host = aws_instance.red.public_ip
   }
+  provisioner "remote-exec" {
+  inline = [
+    "sudo apt update",
+    "sudo apt install openjdk-17-jdk maven -y",
+    "git clone https://github.com/spring-projects/spring-petclinic.git",
+    "cd spring-petclinic",
+    "./mvn package",
+    "jar xvf target/spring-petclinic-3.0.0-SNAPSHOT.jar"
+  ]
+}
 }
 resource "aws_instance" "green" {
   instance_type               = "t2.micro"
@@ -144,4 +155,14 @@ resource "null_resource" "spc1" {
     private_key = file("~/.ssh/id_rsa")
     host = aws_instance.green.public_ip
   }
+  provisioner "remote-exec" {
+  inline = [
+    "sudo apt update",
+    "sudo apt install openjdk-17-jdk maven -y",
+    "git clone https://github.com/spring-projects/spring-petclinic.git",
+    "cd spring-petclinic",
+    "./mvn package",
+    "jar xvf target/spring-petclinic-3.0.0-SNAPSHOT.jar"
+  ]
+}
  }
