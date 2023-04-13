@@ -1,6 +1,9 @@
 resource "aws_vpc" "vpc_imp" {
     cidr_block = "-"
 }
+resource "aws_vpc" "vpc" {
+    cidr_block = "-"
+}
 
 resource "aws_subnet" "sub_imp_1" {
     cidr_block = "-"

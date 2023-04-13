@@ -1,0 +1,6 @@
+      "sudo apt update",
+      "sudo apt install -y ansible",
+      "sudo mkdir /etc/ansible",
+      "sudo chmod 777 /etc/ansible",
+      "sudo echo '[web]' >> /etc/ansible/hosts",
+      "sudo echo '${self.public_ip}' >> /etc/ansible/hosts",

@@ -88,7 +88,7 @@ resource "aws_security_group" "terraformlb" {
 resource "aws_key_pair" "deployer" {
   key_name   = "terraform3"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCyNRL9nyxUnjeqSr92yVqV4ImkfwR6qYQrBBR5+eaxrCDQhIoHUtgiG0YXjrhXl6E6ErKiZBgwGjjFsMqjdzsfS9kHiawTMxTr4ilwCfOChgDfR5t5e3L/X4F/ZjCZiK1qNha+/DC5r/dGwhB579yxXSUxVWfGOP4buGWkWBWpmrN94EMmtFdyBSjnjMardSV2mXXPjPDNDudDUMEsQr4P8aAbiOj9VCf2tpQswElkjA4IZ8DfIfeIwKYsR11uDAqZrSf96TxFXN6OCKOnqu4DSWxFbKywffS5XG+nTC1+oee/ftdL6rlJpg/VaTN4Bqfsk9px/redvXlNFUsaZqrm5UiLCS7QGO/HfPa57JQBsS+jv2fURQfYMg35otxtbE3+IIHLzmdNnQOVU/scTyuO73kHrU2w0zTqfbMbqm7CqpnBfrdyzI4+AnV/4HtYojxGTZR6S3oV0azc7eKAGyeUjMttTuVbDYlQInkvZvS4SrFSfRTk+v1CFX0IJvSlVFE= dell@DESKTOP-G8OJBDS"
-}
+}(/)
 
 ## create EC2 instance
 resource "aws_instance" "apache" {
@@ -158,7 +158,7 @@ resource "aws_lb" "lb1" {
 ## create load balancer listener
 resource "aws_lb_listener" "front_end" {
   load_balancer_arn = aws_lb.lb1.arn
-  port              = "80"
+  port              =80" "
   protocol          = "HTTP"
   default_action {
     type             = "forward"
